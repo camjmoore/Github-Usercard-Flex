@@ -3,12 +3,7 @@
 https://api.github.com/users/<your name>
 */
 
-axios.get("https://api.github.com/users/occludedarp")
-  .then(response => {
-    return response.data
-  })
 
-  userHandler(response.data)
 
 /* Step 2: Inspect and study the data coming back, this is YOUR 
 github info! You will need to understand the structure of this 
@@ -31,16 +26,15 @@ Using that array, iterate over it, requesting data for each user, creating a new
 user, and adding that card to the DOM.
 */
 
-const followersArray = [];
 
 const cardHTML = document.querySelector('.cards')
-         
+
 function userHandler(dataObj){
   
-  const create = element => document.querySelector(element)
-
+  const create = element => document.createElement(element)
+  
   let divCard = create('div')
-
+  
   let cardImg = create('img')
   let cardInfo = create('div')
   
@@ -73,11 +67,11 @@ function userHandler(dataObj){
   
   profile.textContent = 'Profile:'
   address.textContent = `address to users github page: ${dataObj.html_url}`
-  address.href = dataObj.html_url
+  address.setAttribute('href', dataObj.html_url)
   
   cardImg.src = dataObj.avatar_url
   bioName.textContent = dataObj.name
-  userName.textContent = datObj.login
+  userName.textContent = dataObj.login
   location.textContent = `Location: ${dataObj.location}`
   followers.textContent = `Followers: ${dataObj.followers}`
   following.textContent = `Following: ${dataObj.following}`
@@ -86,6 +80,25 @@ function userHandler(dataObj){
   return divCard
 }
 
+axios.get("https://api.github.com/users/occludedarp")
+.then(response => {
+  const userData = response.data
+  cardHTML.appendChild(userHandler(userData))
+})
+
+
+const followersArray = ["tetondan", "dustinmyers", "justsml", "luishrd", "bigknell"];
+  
+followersArray.forEach( follower => {  
+axios.get(`https://api.github.com/users/${follower}`)
+.then(response => {
+  const user = response.data
+  cardHTML.appendChild(userHandler(user))
+})
+})
+
+
+      
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
 
